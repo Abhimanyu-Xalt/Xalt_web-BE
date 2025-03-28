@@ -90,26 +90,31 @@ const FormSubmission = mongoose.model("FormSubmission", FormSubmissionSchema);
 // Configure Nodemailer
 
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: 'abhimanyu.xalt@gmail.com', // Your Gmail address
-    pass: 'gvgm rhje txrv lcyd' 
-  }
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: 'abhimanyu.xalt@gmail.com', // Your Gmail address
+//     pass: 'gvgm rhje txrv lcyd' 
+//   }
+// });
 
 // const transporter = nodemailer.createTransport({
 //   host: "smtp.office365.com", // ✅ Use Outlook's SMTP server
 //   port: 587, // ✅ Use 587 for TLS (recommended)
 //   secure: false, // ✅ `false` for TLS
 //   auth: {
-//     user: 'abhimanyu.mishra@xaltanalytics.com', // ✅ Your Outlook email
-//     pass: 'Xalt@123' // ✅ Your Outlook password (or App Password)
+//     user: 'sales@xaltanalytics.com', // ✅ Your Outlook email
+//     pass: 'pqwrjtdkhtkzhlds' // ✅ Your Outlook password (or App Password)
 //   },
 //   tls: {
 //     ciphers: "SSLv3", // ✅ Ensures a secure connection
 //   }
 // });
+
+
+
+
+// git branch -M main
 
 // API Route to Handle Form Submission
 app.post("/submit", async (req, res) => {
@@ -125,15 +130,15 @@ app.post("/submit", async (req, res) => {
     await newSubmission.save();
 
     // Send confirmation email to the user
-    const mailOptions = {
-      from: "abhimanyu.mishra@xaltanalytics.com",
-      to: email,
-      text: `Hello ${name},\n\nThank you for reaching out!\n\nWe have received your details:\n\nOur team will get back to you shortly.\n\nBest regards,\nXalt Analytics`
-    };
+    // const mailOptions = {
+    //   from: "abhimanyu.mishra@xaltanalytics.com",
+    //   to: email,
+    //   text: `Hello ${name},\n\nThank you for reaching out!\n\nWe have received your details:\n\nOur team will get back to you shortly.\n\nBest regards,\nXalt Analytics`
+    // };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ details: "Form submitted successfully and email sent." });
+    res.status(200).json({ details: "Form submitted successfully." });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Error processing request" });

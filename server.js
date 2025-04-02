@@ -47,81 +47,42 @@
 
 
 
-
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
-
-// const app = express();
-
-
-// import express from "express";
-// import mongoose from "mongoose";
-// import cors from "cors";
-// import nodemailer from "nodemailer";
+// const { addDataToSheet } = require("./googleSheet");
 
 const app = express();
-
-const PORT =  3001;
+const PORT = 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
+// MongoDB Connection
 mongoose
   .connect("mongodb+srv://Xalt-test:nsFEW4w6OzddKead@test.yux69jn.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-// Define Mongoose Schema & Model
+// Mongoose Schema & Model
 const FormSubmissionSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
-  organization: { type: String  },
-  details: { type: String},
+  organization: { type: String },
+  details: { type: String },
   submittedAt: { type: Date, default: Date.now }
 });
 
 const FormSubmission = mongoose.model("FormSubmission", FormSubmissionSchema);
 
-// Configure Nodemailer
-
-
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: 'abhimanyu.xalt@gmail.com', // Your Gmail address
-//     pass: 'gvgm rhje txrv lcyd' 
-//   }
-// });
-
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.office365.com", // ✅ Use Outlook's SMTP server
-//   port: 587, // ✅ Use 587 for TLS (recommended)
-//   secure: false, // ✅ `false` for TLS
-//   auth: {
-//     user: 'sales@xaltanalytics.com', // ✅ Your Outlook email
-//     pass: 'pqwrjtdkhtkzhlds' // ✅ Your Outlook password (or App Password)
-//   },
-//   tls: {
-//     ciphers: "SSLv3", // ✅ Ensures a secure connection
-//   }
-// });
-
-
-
-
-// git branch -M main
-
-// API Route to Handle Form Submission
+// Form Submission Route
 app.post("/submit", async (req, res) => {
   const { name, email, organization, details } = req.body;
 
-  if (!name || !email || !organization || !details) {
-    return res.status(400).json({ error: "All fields are required" });
+  // Validate input
+  if (!name || !email) {
+    return res.status(400).json({ error: "Name and email are required." });
   }
 
   try {
@@ -129,20 +90,13 @@ app.post("/submit", async (req, res) => {
     const newSubmission = new FormSubmission({ name, email, organization, details });
     await newSubmission.save();
 
-    // Send confirmation email to the user
-    // const mailOptions = {
-    //   from: "abhimanyu.mishra@xaltanalytics.com",
-    //   to: email,
-    //   text: `Hello ${name},\n\nThank you for reaching out!\n\nWe have received your details:\n\nOur team will get back to you shortly.\n\nBest regards,\nXalt Analytics`
-    // };
-
-    // await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ details: "Form submitted successfully." });
+    // Send a success response
+    return res.status(201).json({ message: "Submission successful", submission: newSubmission });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Error processing request" });
+    console.error("Error saving submission:", error);
+    return res.status(500).json({ error: "An error occurred while saving the submission." });
   }
+
 });
 
 // Start Server
